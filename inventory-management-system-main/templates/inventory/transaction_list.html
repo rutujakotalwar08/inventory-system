@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Transactions | InventoryApp{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Stock Transactions</h2>
+    <a href="{% url 'transaction_create' %}" class="btn btn-primary shadow-sm"><i class="bi bi-plus-circle me-1"></i> New Transaction</a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">Date</th>
+                        <th>Product</th>
+                        <th>Transaction Type</th>
+                        <th>Quantity</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tx in transactions %}
+                    <tr>
+                        <td class="ps-4 text-muted">{{ tx.date|date:"M d, Y H:i" }}</td>
+                        <td class="fw-medium">{{ tx.product.name }}</td>
+                        <td>
+                            {% if tx.transaction_type == 'IN' %}
+                                <span class="badge-stock-in"><i class="bi bi-arrow-down-left"></i> Stock In</span>
+                            {% else %}
+                                <span class="badge-stock-out"><i class="bi bi-arrow-up-right"></i> Stock Out</span>
+                            {% endif %}
+                        </td>
+                        <td class="fw-bold">{{ tx.quantity }}</td>
+                        <td class="text-muted small">{{ tx.note|default:"-"|truncatechars:30 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No transactions found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

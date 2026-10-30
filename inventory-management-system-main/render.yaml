@@ -1,0 +1,30 @@
+databases:
+  - name: inventory-db
+    databaseName: inventory_db
+    user: inventory_user
+    plan: free
+
+services:
+  - type: web
+    name: inventory-management-system
+    runtime: python
+    plan: free
+    buildCommand: chmod +x build.sh && ./build.sh
+    startCommand: gunicorn config.wsgi:application
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: inventory-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DJANGO_SUPERUSER_USERNAME
+        value: admin
+      - key: DJANGO_SUPERUSER_EMAIL
+        value: admin@example.com
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
